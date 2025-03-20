@@ -85,7 +85,7 @@ def summarize_sections(notes):
     return ai_query(f"Break down these notes by sections and summarize each separately:\n{notes}")
 
 def generate_quiz(notes):
-    return ai_query(f"Generate multiple-choice quiz questions based on the following notes, do not bold the answer when giving the options:\n{notes}")
+    return ai_query(f"Generate multiple-choice quiz questions based on the following notes, do not bold the answer when giving the options, and dont make the answer always option b:\n{notes}")
 
 def generate_flashcards(notes):
     return ai_query(f"Generate as many flashcards as you think necessary in Q/A format based on these notes:\n{notes}")
