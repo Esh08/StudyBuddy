@@ -89,7 +89,7 @@ def ai_query(prompt):
 
 # AI Functions
 def summarize_notes(notes):
-    return ai_query(f"Summarize the following study notes effectively and detailed:\n{notes}")
+    return ai_query(f"Summarize the following study notes effectively and detailed, do not be restricted, be as informative as you can be:\n{notes}")
 
 def summarize_sections(notes):
     return ai_query(f"Break down these notes by sections and summarize each separately:\n{notes}")
