@@ -8,8 +8,6 @@ from pdf2image import convert_from_path
 from PIL import Image
 from pptx import Presentation
 from docx import Document
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 
 # Load API Key
 load_dotenv()
@@ -27,6 +25,18 @@ st.set_page_config(page_title="StudyBuddy", layout="wide")
 # Sidebar UI
 st.sidebar.title("⚙️ Settings")
 st.sidebar.info("Upload your study materials and let StudyBuddy AI help you summarize, generate quizzes, and more!")
+
+# Session State Initialization (Persists Data Across Tabs)
+if "summary" not in st.session_state:
+    st.session_state.summary = ""
+if "section_summary" not in st.session_state:
+    st.session_state.section_summary = ""
+if "quiz" not in st.session_state:
+    st.session_state.quiz = ""
+if "flashcards" not in st.session_state:
+    st.session_state.flashcards = ""
+if "concept_map" not in st.session_state:
+    st.session_state.concept_map = ""
 
 # Cache OCR results
 @st.cache_data
@@ -85,19 +95,13 @@ def summarize_sections(notes):
     return ai_query(f"Break down these notes by sections and summarize each separately:\n{notes}")
 
 def generate_quiz(notes):
-    return ai_query(f"Generate multiple-choice quiz questions based on the following notes, do not bold the answer when giving the options, and dont make the answer always option b:\n{notes}")
+    return ai_query(f"Generate multiple-choice quiz questions based on the following notes, do not bold the answer when giving the options, and don't make the answer always option B:\n{notes}")
 
 def generate_flashcards(notes):
     return ai_query(f"Generate as many flashcards as you think necessary in Q/A format based on these notes:\n{notes}")
 
 def generate_concept_map(notes):
     return ai_query(f"Create a concept map with key topics and relationships based on:\n{notes}")
-
-def export_to_pdf(text, filename="StudyBuddyAI_Notes.pdf"):
-    c = canvas.Canvas(filename, pagesize=letter)
-    c.drawString(100, 750, text)
-    c.save()
-    return filename
 
 # Main UI
 st.title("StudyBuddy")
@@ -137,44 +141,51 @@ if uploaded_files:
     st.text_area("Study Notes:", all_notes, height=200)
 
     # Tabs for better UI navigation
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📖 Summarization", "📝 Quiz", "🎴 Flashcards", "🌍 Concept Map", "📄 Export"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📖 Summarization", "📝 Quiz", "🎴 Flashcards", "🌍 Concept Map"])
 
     with tab1:
         col1, col2 = st.columns(2)
         with col1:
             if st.button("📝 Summarize Chapter", use_container_width=True):
-                summary = summarize_notes(all_notes)
-                st.write("## 📖 Summary")
-                st.write(summary)
-
+                st.session_state.summary = summarize_notes(all_notes)
         with col2:
             if st.button("🗂 Summarize by Sections", use_container_width=True):
-                section_summary = summarize_sections(all_notes)
-                st.write("## 📚 Section-wise Summary")
-                st.write(section_summary)
+                st.session_state.section_summary = summarize_sections(all_notes)
+
+        # Display persistent summary results
+        if st.session_state.summary:
+            st.write("## 📖 Summary")
+            st.write(st.session_state.summary)
+        if st.session_state.section_summary:
+            st.write("## 📚 Section-wise Summary")
+            st.write(st.session_state.section_summary)
 
     with tab2:
         if st.button("📝 Generate Quiz", use_container_width=True):
-            quiz = generate_quiz(all_notes)
+            st.session_state.quiz = generate_quiz(all_notes)
+
+        # Display persistent quiz results
+        if st.session_state.quiz:
             st.write("## 🎯 Quiz")
-            st.write(quiz)
+            st.write(st.session_state.quiz)
 
     with tab3:
         if st.button("🎴 Generate Flashcards", use_container_width=True):
-            flashcards = generate_flashcards(all_notes)
+            st.session_state.flashcards = generate_flashcards(all_notes)
+
+        # Display persistent flashcards results
+        if st.session_state.flashcards:
             st.write("## 🎴 Flashcards")
-            st.write(flashcards)
+            st.write(st.session_state.flashcards)
 
     with tab4:
         if st.button("🌍 Generate Concept Map", use_container_width=True):
-            concept_map = generate_concept_map(all_notes)
-            st.write("## 🌍 Concept Map")
-            st.write(concept_map)
+            st.session_state.concept_map = generate_concept_map(all_notes)
 
-    with tab5:
-        if st.button("📄 Export Summary as PDF", use_container_width=True):
-            pdf_filename = export_to_pdf(all_notes)
-            st.success(f"✅ Summary saved as {pdf_filename}")
+        # Display persistent concept map results
+        if st.session_state.concept_map:
+            st.write("## 🌍 Concept Map")
+            st.write(st.session_state.concept_map)
 
     # Q&A Section
     st.write("## ❓ Ask StudyBuddy AI a Question")
