@@ -22,7 +22,7 @@ client = OpenAI(
 )
 
 # Set page layout
-st.set_page_config(page_title="StudyBuddy AI", layout="wide")
+st.set_page_config(page_title="StudyBuddy", layout="wide")
 
 # Sidebar UI
 st.sidebar.title("⚙️ Settings")
@@ -100,7 +100,7 @@ def export_to_pdf(text, filename="StudyBuddyAI_Notes.pdf"):
     return filename
 
 # Main UI
-st.title("🤖 StudyBuddy")
+st.title("StudyBuddy")
 st.write("Upload your study materials and let StudyBuddy generate summaries, quizzes, and flashcards!")
 
 uploaded_files = st.file_uploader(
