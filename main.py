@@ -78,11 +78,11 @@ def extract_text_from_docx(docx_path):
 def ai_query(prompt):
     completion = client.chat.completions.create(
         extra_headers={
-            "HTTP-Referer": "https://your-site.com",  # Optional: replace with your site URL
+            "HTTP-Referer": "https://thestudybuddy.streamlit.app/",  # Optional: replace with your site URL
             "X-Title": "StudyBuddy AI",  # Optional: replace with your app name
         },
         extra_body={},
-        model="qwen/qwq-32b:free",
+        model="deepseek/deepseek-r1:free",
         messages=[{"role": "user", "content": prompt}],
     )
     return completion.choices[0].message.content
