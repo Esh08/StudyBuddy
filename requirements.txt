@@ -1,0 +1,10 @@
+openai 
+pdfplumber 
+pytesseract 
+pdf2image 
+Pillow 
+python-pptx 
+python-docx 
+reportlab 
+streamlit 
+python-dotenv
